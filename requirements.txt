@@ -1,7 +1,7 @@
-dash==2.12.0
-plotly==5.17.0
-pandas==1.5.3
-Cython>=0.29.36
-numpy>=1.21
+dash       
+plotly        
+pandas       
+Cython
+numpy
 
 gunicorn
