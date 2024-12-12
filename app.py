@@ -293,7 +293,7 @@ app.layout = html.Div([
                 html.P("Developed by Team No.2 Magpies", 
                        style={'color': COLOR_SCHEME['text'], 'fontSize': '28px', 'marginBottom': '8px'}),
                 html.P("周芸瑄 • 楊誼萱 • 高愷傑 • 林樂瑞", 
-                       style={'color': COLOR_SCHEME['secondary'], 'fontSize': '24px', 'opacity': '0.9'})
+                       style={'color': COLOR_SCHEME['text'], 'fontSize': '24px', 'opacity': '0.9'})
             ], style={'marginTop': '12px'})
         ], style={'textAlign': 'center'})
     ], style={
@@ -373,8 +373,7 @@ app.layout = html.Div([
                 style={
                     'width': '48%',  # Adjust width to leave proper spacing
                     'display': 'inline-block',
-                    'marginRight': '2%',
-                    'height': '500px'
+                    'marginRight': '2%'
                 }
             ),
             dcc.Graph(
@@ -486,7 +485,6 @@ def update_monthly_revenue(start_date, end_date, age_range, course_types, cities
 
     # Create figure with secondary y-axis
     fig = make_subplots(specs=[[{"secondary_y": True}]])
-
     # Add revenue bars
     fig.add_trace(
         go.Bar(
@@ -497,7 +495,10 @@ def update_monthly_revenue(start_date, end_date, age_range, course_types, cities
         ),
         secondary_y=False
     )
-
+    # Add line chart for monthly growth rate
+    monthly_revenue['Growth_Rate_Label'] = monthly_revenue['Growth_Rate'].apply(
+        lambda x: f"{x:.1f}%"
+    )
     # Add growth rate line
     fig.add_trace(
         go.Scatter(
@@ -505,7 +506,11 @@ def update_monthly_revenue(start_date, end_date, age_range, course_types, cities
             y=monthly_revenue['Growth_Rate'],
             name="Growth Rate (%)",
             line=dict(color=COLOR_SCHEME['accent']),
-            mode='lines+markers'
+            text=monthly_revenue['Growth_Rate_Label'],
+            textposition='top center',  
+            textfont=dict(color='#024959'), 
+            hovertemplate="Growth Rate: %{text}", 
+            mode='lines+markers+text'
         ),
         secondary_y=True
     )
@@ -513,24 +518,24 @@ def update_monthly_revenue(start_date, end_date, age_range, course_types, cities
     # Update layout with significantly increased margins and spacing
     fig.update_layout(
         title={
-            'text': 'Monthly Revenue and Growth Rate',
-            'y': 0.95,
+            'text': 'Monthly Revenue Analysis',
+            'y': 0.98,
             'x': 0.5,
             'xanchor': 'center',
             'yanchor': 'top',
             'font': dict(size=24)
         },
-        height=700,  # 增加圖表高度
+        height=600,  # 增加圖表高度
         margin=dict(
             l=100,   # 增加左邊距
             r=100,   # 增加右邊距
-            t=150,   # 顯著增加上邊距
-            b=100    # 增加下邊距
+            t=100,   # 顯著增加上邊距
+            b=150    # 增加下邊距
         ),
         legend=dict(
             orientation="h",
             yanchor="bottom",
-            y=1.15,  # 將圖例往上移更多
+            y=1.03,  # 將圖例往上移更多
             xanchor="center",
             x=0.5,
             font=dict(size=20),
@@ -605,38 +610,37 @@ def update_booking_heatmap(start_date, end_date, age_range, course_types, cities
 
     # Add day and month columns
     filtered_df['Day_of_Week'] = filtered_df['Order_Date'].dt.day_name()
-    filtered_df['Month'] = filtered_df['Order_Date'].dt.month_name()
+    filtered_df['Month'] = filtered_df['Order_Date'].dt.strftime('%Y-%m')
 
     # Group data for heatmap
     heatmap_data = filtered_df.groupby(['Day_of_Week', 'Month'])['Amount'].sum().reset_index()
 
     # Define the correct order for days and months
     days_order = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday']
-    months_order = [
-        'January', 'February', 'March', 'April', 'May', 'June',
-        'July', 'August', 'September', 'October', 'November', 'December'
-    ]
+    #months_order = [
+    #    'January', 'February', 'March', 'April', 'May', 'June',
+    #    'July', 'August', 'September', 'October', 'November', 'December'
+    #]
 
     # Ensure correct ordering and add missing combinations
-    all_combinations = pd.DataFrame(list(itertools.product(days_order, months_order)), columns=['Day_of_Week', 'Month'])
-    heatmap_data = all_combinations.merge(heatmap_data, on=['Day_of_Week', 'Month'], how='left').fillna(0)
+    all_combinations = pd.DataFrame(list(itertools.product(days_order)), columns=['Day_of_Week'])
+    heatmap_data = all_combinations.merge(heatmap_data, on=['Day_of_Week'], how='left').fillna(0)
 
     # Pivot the data for the heatmap
     heatmap_pivot = heatmap_data.pivot(index='Day_of_Week', columns='Month', values='Amount').fillna(0)
 
     # Reindex rows and columns explicitly
-    heatmap_pivot = heatmap_pivot.reindex(index=days_order, columns=months_order)
+    heatmap_pivot = heatmap_pivot.reindex(index=days_order)
 
     # Create heatmap
     fig = px.imshow(
         heatmap_pivot,
-        labels=dict(x="Month", y="Day of the Week", color="Total Amount"),
-        x=months_order,
+        labels=dict( y="Day of the Week", color="Total Amount"),
         y=days_order,
         color_continuous_scale=[
             [0, "grey"],
-            [0.5, "lightcoral"],
-            [1, "red"]
+            [0.5, "#ffe5bd"],
+            [1, "#EDB265"]
         ],
         zmin=0,
         zmax=120000,
@@ -644,8 +648,8 @@ def update_booking_heatmap(start_date, end_date, age_range, course_types, cities
     )
     fig.update_layout(
         title={
-            'text': 'Booking Time Heatmap',
-            'y': 0.85,
+            'text': 'Student Order Timing Analysis',
+            'y': 0.98,
             'x': 0.5,
             'xanchor': 'center',
             'yanchor': 'top',
@@ -663,7 +667,8 @@ def update_booking_heatmap(start_date, end_date, age_range, course_types, cities
             tickfont=dict(size=18),
             titlefont=dict(size=20),
             title_standoff=30,  # 增加軸標題與圖表的距離
-            title_text='Month',
+            dtick="M1",  # 設置月份間隔
+            tickformat="%b %Y"  # 格式化日期顯示
         ),
         yaxis=dict(
             tickfont=dict(size=18),
@@ -964,14 +969,16 @@ def update_teacher_trend(start_date, end_date, age_range, course_types, cities, 
     if genders:
         filtered_df = filtered_df[filtered_df['Student_Gender'].isin(genders)]
 
+
     # Calculate total classes per teacher
     teacher_totals = filtered_df.groupby('Teacher_Name').size().sort_values(ascending=False)
     
     # Select top 5 and bottom 5 teachers if more than 10 teachers
     if len(teacher_totals) > 10:
         top_teachers = list(teacher_totals.head(5).index)
-        bottom_teachers = list(teacher_totals.tail(5).index)
-        selected_teachers = top_teachers + bottom_teachers
+        #bottom_teachers = list(teacher_totals.tail(5).index)
+        #selected_teachers = top_teachers + bottom_teachers
+        selected_teachers = top_teachers
         filtered_df = filtered_df[filtered_df['Teacher_Name'].isin(selected_teachers)]
 
     # Calculate monthly class counts per teacher
@@ -982,69 +989,92 @@ def update_teacher_trend(start_date, end_date, age_range, course_types, cities, 
 
     # Create figure
     fig = go.Figure()
+    # Create data for the bar chart with X-axis as Teacher, Y-axis as Sales, and Color as Month
+    teacher_sales_data = monthly_classes.groupby(['Teacher_Name', 'Course_Date'])['Class_Count'].sum().reset_index()
+    total_sales_per_teacher = teacher_sales_data.groupby('Teacher_Name')['Class_Count'].sum().sort_values(ascending=False).reset_index()
+    total_sales_per_teacher.rename(columns={'Class_Count': 'Total_Sales'}, inplace=True)
 
-    # Add traces for each teacher
-    for teacher in monthly_classes['Teacher_Name'].unique():
-        teacher_data = monthly_classes[monthly_classes['Teacher_Name'] == teacher]
-        total_classes = teacher_totals[teacher]
-        
-        # Add "(Top)" or "(Bottom)" label based on position
-        if len(teacher_totals) > 10:
-            if teacher in top_teachers:
-                label = f"{teacher} (Top: {total_classes} classes)"
-            else:
-                label = f"{teacher} (Bottom: {total_classes} classes)"
-        else:
-            label = f"{teacher} ({total_classes} classes)"
-            
-        fig.add_trace(go.Scatter(
-            x=teacher_data['Course_Date'],
-            y=teacher_data['Class_Count'],
-            name=label,
-            mode='lines+markers'
+    # 定義 selected_teachers 列表，按照 Total_Sales 降序排序
+    selected_teachers = total_sales_per_teacher['Teacher_Name'].tolist()
+
+    # 設定 Teacher_Name 的順序，並將數據根據這個順序排序
+    teacher_sales_data['Teacher_Name'] = pd.Categorical(
+        teacher_sales_data['Teacher_Name'],
+        categories=selected_teachers,  # 使用 selected_teachers 列表作為順序
+        ordered=True
+    )
+
+    # 按照新的 X 軸順序和日期排序
+    teacher_sales_data = teacher_sales_data.sort_values(by=['Teacher_Name', 'Course_Date']).reset_index(drop=True)
+
+    # 確保 Course_Date 的排序為正確的月份順序
+    teacher_sales_data['Course_Date'] = pd.Categorical(
+        teacher_sales_data['Course_Date'],
+        categories=[
+            '2024-01', '2024-02', '2024-03', '2024-04', '2024-05', '2024-06',
+            '2024-07', '2024-08', '2024-09', '2024-10', '2024-11', '2024-12'
+        ],
+        ordered=True
+    )
+
+    # 定義顏色映射
+    color_mapping = {
+        '2024-01': "#FFF4CC",
+        '2024-02': "#FFE066",
+        '2024-03': "#FFC107",
+        '2024-04': "#FFCDD2",
+        '2024-05': "#F44336",
+        '2024-06': "#B71C1C",
+        '2024-07': "#AED581",
+        '2024-08': "#81C784",
+        '2024-09': "#388E3C",
+        '2024-10': "#90CAF9",
+        '2024-11': "#2196F3",
+        '2024-12': "#0D47A1",
+    }
+
+    # 繪製堆疊條形圖
+    fig = go.Figure()
+
+    # 為每個月份添加條形
+    for month in teacher_sales_data['Course_Date'].cat.categories:
+        month_data = teacher_sales_data[teacher_sales_data['Course_Date'] == month]
+        fig.add_trace(go.Bar(
+            x=month_data['Teacher_Name'],  # X 軸為教師名稱，順序已按 selected_teachers 排列
+            y=month_data['Class_Count'],
+            name=month,
+            marker_color=color_mapping[month]  # 使用映射的顏色
         ))
 
-    # Update layout
-    title_text = 'Monthly Classes by Teacher'
-    if len(teacher_totals) > 10:
-        title_text += ' (Top 5 & Bottom 5)'
-
+    # 更新 layout
     fig.update_layout(
+        barmode='stack',  # 堆疊模式
         title={
-            'text': title_text,
+            'text': 'Sales Volume by Teacher (Sorted by Total Sales)',
             'y': 0.95,
             'x': 0.5,
             'xanchor': 'center',
             'yanchor': 'top',
-            'font': dict(size=24),
-            'pad': dict(b=130)  # 增加標題底部的間距
+            'font': dict(size=24)
         },
-        xaxis_title="Month",
-        yaxis_title="Number of Classes",
+        xaxis_title="Teacher",
+        yaxis_title="Sales Volume",
         height=800,
         margin=dict(l=100, r=100, t=150, b=100),
         legend=dict(
-            orientation="h",
+            orientation="v",  # 水平排列
             yanchor="bottom",
-            y=-0.3,
+            y=-0.2,
             xanchor="center",
-            x=0.5,
-            font=dict(size=16),
-            traceorder="normal",
-            itemsizing="constant",
-            itemwidth=40,
-            itemclick=False,
-            itemdoubleclick=False
+            x=9,
+            font=dict(size=13),
+            title_text="Month"
         ),
         xaxis=dict(
-            domain=[0.1, 0.9]  # 保持水平範圍
-        ),
-        yaxis=dict(
-            domain=[0.5, 1]  # 調整垂直範圍，使圖表往上移
+            tickangle=45
         ),
         autosize=True,
-        showlegend=True,
-        plot_bgcolor='rgba(0,0,0,0)',   
+        plot_bgcolor='rgba(0,0,0,0)',
         paper_bgcolor='rgba(0,0,0,0)'
     )
 
@@ -1061,8 +1091,44 @@ def update_teacher_trend(start_date, end_date, age_range, course_types, cities, 
      Input('gender-dropdown', 'value')],
     prevent_initial_call=False
 )
-def update_teacher_heatmap(start_date, end_date, age_range, course_types, cities, genders):
+    
+def update_teacher_trend(start_date, end_date, age_range, course_types, cities, genders):
     filtered_df = TP_data.copy()
+    
+    # Remove Unknown data
+    filtered_df = filtered_df[
+        (filtered_df['Teacher_Name'] != 'Unknown') & 
+        (filtered_df['Teacher_Name'].notna())
+    ]
+    
+    # Apply filters
+    if start_date and end_date:
+        filtered_df = filtered_df[
+            (filtered_df['Course_Date'] >= start_date) & 
+            (filtered_df['Course_Date'] <= end_date)
+        ]
+    if age_range:
+        filtered_df = filtered_df[
+            (filtered_df['Student_Age'] >= age_range[0]) & 
+            (filtered_df['Student_Age'] <= age_range[1])
+        ]
+    if cities:
+        filtered_df = filtered_df[filtered_df['Learning_City'].isin(cities)]
+    if genders:
+        filtered_df = filtered_df[filtered_df['Student_Gender'].isin(genders)]
+
+    # Calculate total classes per teacher
+    teacher_totals = filtered_df.groupby('Teacher_Name').size().sort_values(ascending=False)
+    
+    # Select top 5 and bottom 5 teachers if more than 10 teachers
+    if len(teacher_totals) > 10:
+        top_teachers = list(teacher_totals.head(5).index)
+        #bottom_teachers = list(teacher_totals.tail(5).index)
+        #selected_teachers = top_teachers + bottom_teachers
+        selected_teachers = top_teachers
+        filtered_df = filtered_df[filtered_df['Teacher_Name'].isin(selected_teachers)]
+
+    #filtered_df = TP_data.copy()
     
     # 打印列名以檢查
     print("Available columns:", filtered_df.columns.tolist())
@@ -1115,8 +1181,8 @@ def update_teacher_heatmap(start_date, end_date, age_range, course_types, cities
     teacher_totals = filtered_df.groupby('Teacher_Name')[student_id_column].nunique().sort_values(ascending=False)
     
     # Select top 10 teachers if more than 10 teachers
-    if len(teacher_totals) > 10:
-        selected_teachers = list(teacher_totals.head(10).index)
+    if len(teacher_totals) > 5:
+        selected_teachers = list(teacher_totals.head(5).index)
         heatmap_data = heatmap_data.loc[selected_teachers]
         teacher_totals = teacher_totals[selected_teachers]
 
@@ -1127,14 +1193,18 @@ def update_teacher_heatmap(start_date, end_date, age_range, course_types, cities
     fig = px.imshow(
         heatmap_data,
         labels=dict(x="Age Group", y="Teacher", color="Number of Unique Students"),
-        color_continuous_scale="Viridis",
+        color_continuous_scale=[
+            [0, "grey"],
+            [0.5, "#ffe5bd"],
+            [1, "#EDB265"]
+        ],
         aspect="auto"
     )
 
     # Update layout
     title_text = 'Teacher-Student Age Distribution (Unique Students)'
-    if len(teacher_totals) > 10:
-        title_text += ' (Top 10 Teachers)'
+    if len(teacher_totals) > 5:
+        title_text += ' (Top 5 Teachers)'
         
     fig.update_layout(
         title={
@@ -1160,11 +1230,11 @@ def update_teacher_heatmap(start_date, end_date, age_range, course_types, cities
     )
 
     # Add total unique students to y-axis labels
-    fig.update_yaxes(
-        ticktext=[f"{teacher} ({int(teacher_totals[teacher])} students)" 
-                 for teacher in heatmap_data.index],
-        tickvals=list(range(len(heatmap_data.index)))
-    )
+    #fig.update_yaxes(
+    #    ticktext=[f"{teacher} ({int(teacher_totals[teacher])} students)" 
+    #             for teacher in heatmap_data.index],
+    #    tickvals=list(range(len(heatmap_data.index)))
+    #)
 
     return fig
 
