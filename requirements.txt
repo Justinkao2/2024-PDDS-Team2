@@ -1,0 +1,6 @@
+dash==2.12.0
+plotly==5.17.0
+pandas==2.1.3
+sqlite3  # Built-in, no specific version required
+
+gunicorn
