@@ -547,7 +547,7 @@ def update_monthly_revenue(start_date, end_date, age_range, course_types, cities
             titlefont=dict(size=20),
             title_standoff=30,  # 增加軸標題與圖表的距離
             dtick="M1",  # 設置月份間隔
-            tickformat="%b %Y"  # 格式化日期顯示
+            tickformat="%b"  # 格式化日期顯示
         ),
         yaxis=dict(
             tickfont=dict(size=18),
@@ -668,7 +668,7 @@ def update_booking_heatmap(start_date, end_date, age_range, course_types, cities
             titlefont=dict(size=20),
             title_standoff=30,  # 增加軸標題與圖表的距離
             dtick="M1",  # 設置月份間隔
-            tickformat="%b %Y"  # 格式化日期顯示
+            tickformat="%b"  # 格式化日期顯示
         ),
         yaxis=dict(
             tickfont=dict(size=18),
@@ -812,7 +812,7 @@ def update_demographics(start_date, end_date, age_range, course_types, cities,
         n_cities = len(cities)
         
         # Generate colors
-        colors = px.colors.sequential.Blues[2:]
+        colors = px.colors.sequential.Oranges[2:]
         region_colors = colors[:n_regions] if n_regions <= len(colors) else colors * (n_regions // len(colors) + 1)
         
         # Create the bar chart with regions
@@ -1007,30 +1007,49 @@ def update_teacher_trend(start_date, end_date, age_range, course_types, cities, 
     # 按照新的 X 軸順序和日期排序
     teacher_sales_data = teacher_sales_data.sort_values(by=['Teacher_Name', 'Course_Date']).reset_index(drop=True)
 
-    # 確保 Course_Date 的排序為正確的月份順序
+    teacher_sales_data['Course_Date'] = pd.to_datetime(teacher_sales_data['Course_Date']).dt.strftime('%b')
+
+
+   # 確保 Course_Date 的排序為正確的月份順序
     teacher_sales_data['Course_Date'] = pd.Categorical(
         teacher_sales_data['Course_Date'],
         categories=[
-            '2024-01', '2024-02', '2024-03', '2024-04', '2024-05', '2024-06',
-            '2024-07', '2024-08', '2024-09', '2024-10', '2024-11', '2024-12'
+            'Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun',
+            'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'
         ],
         ordered=True
     )
 
-    # 定義顏色映射
+    # 定義新的顏色映射
     color_mapping = {
-        '2024-01': "#FFF4CC",
-        '2024-02': "#FFE066",
-        '2024-03': "#FFC107",
-        '2024-04': "#FFCDD2",
-        '2024-05': "#F44336",
-        '2024-06': "#B71C1C",
-        '2024-07': "#AED581",
-        '2024-08': "#81C784",
-        '2024-09': "#388E3C",
-        '2024-10': "#90CAF9",
-        '2024-11': "#2196F3",
-        '2024-12': "#0D47A1",
+        'Jan': "#272727",  # Raisin black
+        'Feb': "#9EA7AD",  # Cadet gray
+        'Mar': "#E6E6E6",  # Platinum
+        'Apr': "#F3CEA3",  # Sunset
+        'May': "#FFB65F",  # Earth yellow
+        'Jun': "#F89E4A",  # Sandy brown
+        'Jul': "#F18635",  # Orange (wheel)
+        'Aug': "#CC854E",  # Caramel
+        'Sep': "#B6895C",  # New color 1 (焦糖棕調)
+        'Oct': "#AA8A6D",  # New color 2 (溫暖米色調)
+        'Nov': "#A78466",  # Chamoisee
+        'Dec': "#AF8F74",  # Beaver
+    }
+
+    # 定義新的顏色映射
+    color_mapping = {
+        'Jan': "#272727",  # Raisin black
+        'Feb': "#63676A",  # Cadet gray
+        'Mar': "#9EA7AD",  # Platinum
+        'Apr': "#E6E6E6",  # Sunset
+        'May': "#F3CEA3",  # Earth yellow
+        'Jun': "#F8AE6C",  # Sandy brown
+        'Jul': "#FFB65F",  # Orange (wheel)
+        'Aug': "#F89E4A",  # Caramel
+        'Sep': "#F18635",  # 焦糖棕調
+        'Oct': "#CC854E",  # 溫暖米色調
+        'Nov': "#AA8A6D",  # Chamoisee
+        'Dec': "#A78466"  # 更新顏色 (溫暖棕調)
     }
 
     # 繪製堆疊條形圖
@@ -1059,12 +1078,12 @@ def update_teacher_trend(start_date, end_date, age_range, course_types, cities, 
         },
         xaxis_title="Teacher",
         yaxis_title="Sales Volume",
-        height=800,
-        margin=dict(l=100, r=100, t=150, b=100),
+        height=500,
+        margin=dict(l=100, r=100, t=100, b=100),
         legend=dict(
             orientation="v",  # 水平排列
             yanchor="bottom",
-            y=-0.2,
+            y=0,
             xanchor="center",
             x=9,
             font=dict(size=13),
@@ -1215,8 +1234,8 @@ def update_teacher_trend(start_date, end_date, age_range, course_types, cities, 
             'yanchor': 'top',
             'font': dict(size=24)
         },
-        height=600,
-        margin=dict(l=100, r=100, t=150, b=100),
+        height=500,
+        margin=dict(l=100, r=100, t=100, b=100),
         xaxis=dict(
             tickangle=0,
             tickfont=dict(size=18),
