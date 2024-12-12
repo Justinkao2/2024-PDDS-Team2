@@ -5,6 +5,7 @@ import plotly.graph_objects as go
 import plotly.express as px
 import plotly.colors as pc
 from plotly.subplots import make_subplots 
+import itertools
 
 # Define styles at the top of the file
 COLOR_SCHEME = {
@@ -617,7 +618,6 @@ def update_booking_heatmap(start_date, end_date, age_range, course_types, cities
     ]
 
     # Ensure correct ordering and add missing combinations
-    import itertools
     all_combinations = pd.DataFrame(list(itertools.product(days_order, months_order)), columns=['Day_of_Week', 'Month'])
     heatmap_data = all_combinations.merge(heatmap_data, on=['Day_of_Week', 'Month'], how='left').fillna(0)
 
