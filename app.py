@@ -76,6 +76,31 @@ BUTTON_STYLE = {
     }
 }
 
+TAB_STYLE = {
+    'borderBottom': '1px solid #d6d6d6',
+    'padding': '16px 24px',
+    'fontWeight': '600',
+    'fontSize': '18px',
+    'color': COLOR_SCHEME['text'],
+    'backgroundColor': 'white',
+    'borderRadius': '15px 15px 0 0',
+    'marginRight': '4px',
+    'transition': 'all 0.3s ease'
+}
+
+TAB_SELECTED_STYLE = {
+    'borderTop': f'3px solid {COLOR_SCHEME["primary"]}',
+    'borderBottom': '1px solid white',
+    'backgroundColor': 'white',
+    'color': COLOR_SCHEME['primary'],
+    'padding': '16px 24px',
+    'fontWeight': '600',
+    'fontSize': '18px',
+    'borderRadius': '15px 15px 0 0',
+    'marginRight': '4px',
+    'boxShadow': '2px -2px 4px rgba(0,0,0,0.1)'
+}
+
 def get_db_connection():
     """Create and return a database connection"""
     db_path = 'CustomerData.db'
@@ -284,7 +309,7 @@ CHART_THEME = 'plotly_dark'
 
 # Update the layout with new text styles
 app.layout = html.Div([
-    # Header with gradient
+    # Header section (stays outside tabs)
     html.Div([
         html.Div([
             html.H1("Innodanc Dashboard", 
@@ -297,150 +322,409 @@ app.layout = html.Div([
             ], style={'marginTop': '12px'})
         ], style={'textAlign': 'center'})
     ], style={
-        'background': '#ffffff',  # White background
+        'background': '#ffffff',
         'marginBottom': '32px',
         'boxShadow': '0 4px 6px rgba(0,0,0,0.1)',
         'padding': '24px',
-        'border': f'1px solid {COLOR_SCHEME["secondary"]}'  # Added subtle border
+        'border': f'1px solid {COLOR_SCHEME["secondary"]}'
     }),
     
-    # Filters section
-    html.Div([
-        html.Div([
-            html.Label("Date Range", style=TEXT_STYLES['label']),
-            dcc.DatePickerRange(
-                id='date-range-combined',
-                start_date=base_data['Order_Date'].min(),
-                end_date=base_data['Order_Date'].max(),
-                display_format='YYYY-MM-DD',
-                style={'zIndex': 1000, 'fontSize': '16px'}
-            )
-        ], style={'flex': '1', 'marginRight': '32px'}),
-        
-        html.Div([
-            html.Label("Age Range", style=TEXT_STYLES['label']),
-            dcc.RangeSlider(
-                id='age-range-demo',
-                min=DA_data['Age'].min(),
-                max=DA_data['Age'].max(),
-                step=1,
-                marks={i: {'label': str(i), 'style': {'color': COLOR_SCHEME['text'], 'fontSize': '14px'}} 
-                       for i in range(int(DA_data['Age'].min()), int(DA_data['Age'].max()) + 1, 5)},
-                value=[DA_data['Age'].min(), DA_data['Age'].max()]
-            )
-        ], style={'flex': '1', 'marginRight': '24px'}),
-        
-        html.Div([
-            html.Label("Course Type", style=TEXT_STYLES['label']),
-            dcc.Dropdown(
-                id='course-type-combined',
-                options=[{'label': course, 'value': course} 
-                       for course in base_data['Course_Type_Name'].unique()],
-                multi=True,
-                style={'borderRadius': '8px', 'fontSize': '28px'}
-            )
-        ], style={'flex': '1', 'marginRight': '24px'}),
-        
-        html.Div([
-            html.Label("City", style=TEXT_STYLES['label']),
-            dcc.Dropdown(
-                id='region-revenue',
-                options=[{'label': City, 'value': City} 
-                       for City in DA_data['City'].unique()],
-                multi=True,
-                style={'borderRadius': '8px', 'fontSize': '28px'}
-            )
-        ], style={'flex': '1', 'marginRight': '24px'}),
-        html.Div([
-            html.Label("Gender", style=TEXT_STYLES['label']),
-            dcc.Dropdown(
-                id='gender-dropdown',
-                options=[{'label': gender, 'value': gender} for gender in base_data['Customer_Gender'].unique()],
-                multi=True,
-                style={'borderRadius': '8px', 'fontSize': '28px'}
+    # Tabs
+    dcc.Tabs(
+        id='tabs',
+        value='glimpse',
+        children=[
+            dcc.Tab(
+                label='Glimpse',
+                value='glimpse',
+                style=TAB_STYLE,
+                selected_style=TAB_SELECTED_STYLE,
+                children=[
+                    html.Div([
+                        html.H2("Overview Dashboard", style=TEXT_STYLES['section_header']),
+                        
+                        # Key Metrics Row
+                        html.Div([
+                            # Total Revenue Card
+                            html.Div([
+                                html.H3("Total Revenue", style={
+                                    'fontSize': '20px',
+                                    'color': COLOR_SCHEME['text'],
+                                    'marginBottom': '8px'
+                                }),
+                                html.H4(
+                                    f"${base_data['Amount'].sum():,.2f}", 
+                                    style={
+                                        'fontSize': '32px',
+                                        'color': COLOR_SCHEME['primary'],
+                                        'marginTop': '0'
+                                    }
+                                )
+                            ], style={**CARD_STYLE, 'flex': '1', 'textAlign': 'center'}),
+                            
+                            # Total Students Card
+                            html.Div([
+                                html.H3("Total Students", style={
+                                    'fontSize': '20px',
+                                    'color': COLOR_SCHEME['text'],
+                                    'marginBottom': '8px'
+                                }),
+                                html.H4(
+                                    f"{base_data['Student_id'].nunique():,}", 
+                                    style={
+                                        'fontSize': '32px',
+                                        'color': COLOR_SCHEME['primary'],
+                                        'marginTop': '0'
+                                    }
+                                )
+                            ], style={**CARD_STYLE, 'flex': '1', 'textAlign': 'center'}),
+                            
+                            # Total Teachers Card
+                            html.Div([
+                                html.H3("Total Teachers", style={
+                                    'fontSize': '20px',
+                                    'color': COLOR_SCHEME['text'],
+                                    'marginBottom': '8px'
+                                }),
+                                html.H4(
+                                    f"{TP_data['Teacher_ID'].nunique():,}", 
+                                    style={
+                                        'fontSize': '32px',
+                                        'color': COLOR_SCHEME['primary'],
+                                        'marginTop': '0'
+                                    }
+                                )
+                            ], style={**CARD_STYLE, 'flex': '1', 'textAlign': 'center'}),
+                            
+                            # Average Transaction Value Card
+                            html.Div([
+                                html.H3("Avg Transaction Value", style={
+                                    'fontSize': '20px',
+                                    'color': COLOR_SCHEME['text'],
+                                    'marginBottom': '8px'
+                                }),
+                                html.H4(
+                                    f"${base_data['Amount'].mean():,.2f}", 
+                                    style={
+                                        'fontSize': '32px',
+                                        'color': COLOR_SCHEME['primary'],
+                                        'marginTop': '0'
+                                    }
+                                )
+                            ], style={**CARD_STYLE, 'flex': '1', 'textAlign': 'center'})
+                        ], style={'display': 'flex', 'gap': '24px', 'marginBottom': '24px'}),
+                        
+                        # Charts Row
+                        html.Div([
+                            # Revenue Trend
+                            html.Div([
+                                dcc.Graph(id='overview-revenue-trend')
+                            ], style={**CARD_STYLE, 'flex': '1'}),
+                            
+                            # Course Distribution
+                            html.Div([
+                                dcc.Graph(id='overview-course-dist')
+                            ], style={**CARD_STYLE, 'flex': '1'})
+                        ], style={'display': 'flex', 'gap': '24px', 'marginBottom': '24px'}),
+                        
+                        # Bottom Charts Row
+                        html.Div([
+                            # Gender Distribution
+                            html.Div([
+                                dcc.Graph(id='overview-gender-dist')
+                            ], style={**CARD_STYLE, 'flex': '1'}),
+                            
+                            # Age Distribution
+                            html.Div([
+                                dcc.Graph(id='overview-age-dist')
+                            ], style={**CARD_STYLE, 'flex': '1'})
+                        ], style={'display': 'flex', 'gap': '24px'})
+                    ], id='glimpse-content', style={'padding': '24px'})     
+                ]
             ),
-        ], style={'flex': '1'})
-    ], style={**CARD_STYLE, 'display': 'flex', 'alignItems': 'flex-end', 'gap': '24px'}),
-    
-    # Revenue Analysis Section
-    html.Div([
-        html.H2("Revenue & Booking Analysis", 
-                style=TEXT_STYLES['section_header']),
-        html.Div([
-            # Add specific widths and adjust margins for both graphs
-            dcc.Graph(
-                id='monthly-revenue-chart', 
-                style={
-                    'width': '48%',  # Adjust width to leave proper spacing
-                    'display': 'inline-block',
-                    'marginRight': '2%'
-                }
+            
+            # Overview Tab (existing)
+            dcc.Tab(
+                label='Overview',
+                value='overview',
+                style=TAB_STYLE,
+                selected_style=TAB_SELECTED_STYLE,
+                children=[
+                    html.Div([
+                        # Filters section
+                        html.Div([
+                            html.Div([
+                                html.Label("Date Range", style=TEXT_STYLES['label']),
+                                dcc.DatePickerRange(
+                                    id='date-range-combined',
+                                    start_date=base_data['Order_Date'].min(),
+                                    end_date=base_data['Order_Date'].max(),
+                                    display_format='YYYY-MM-DD',
+                                    style={'zIndex': 1000, 'fontSize': '16px'}
+                                )
+                            ], style={'flex': '1', 'marginRight': '32px'}),
+                            
+                            html.Div([
+                                html.Label("Age Range", style=TEXT_STYLES['label']),
+                                dcc.RangeSlider(
+                                    id='age-range-demo',
+                                    min=DA_data['Age'].min(),
+                                    max=DA_data['Age'].max(),
+                                    step=1,
+                                    marks={i: {'label': str(i), 'style': {'color': COLOR_SCHEME['text'], 'fontSize': '14px'}} 
+                                           for i in range(int(DA_data['Age'].min()), int(DA_data['Age'].max()) + 1, 5)},
+                                    value=[DA_data['Age'].min(), DA_data['Age'].max()]
+                                )
+                            ], style={'flex': '1', 'marginRight': '24px'}),
+                            
+                            html.Div([
+                                html.Label("Course Type", style=TEXT_STYLES['label']),
+                                dcc.Dropdown(
+                                    id='course-type-combined',
+                                    options=[{'label': course, 'value': course} 
+                                           for course in base_data['Course_Type_Name'].unique()],
+                                    multi=True,
+                                    style={'borderRadius': '8px', 'fontSize': '28px'}
+                                )
+                            ], style={'flex': '1', 'marginRight': '24px'}),
+                            
+                            html.Div([
+                                html.Label("City", style=TEXT_STYLES['label']),
+                                dcc.Dropdown(
+                                    id='region-revenue',
+                                    options=[{'label': City, 'value': City} 
+                                           for City in DA_data['City'].unique()],
+                                    multi=True,
+                                    style={'borderRadius': '8px', 'fontSize': '28px'}
+                                )
+                            ], style={'flex': '1', 'marginRight': '24px'}),
+                            
+                            html.Div([
+                                html.Label("Gender", style=TEXT_STYLES['label']),
+                                dcc.Dropdown(
+                                    id='gender-dropdown',
+                                    options=[{'label': gender, 'value': gender} 
+                                           for gender in base_data['Customer_Gender'].unique()],
+                                    multi=True,
+                                    style={'borderRadius': '8px', 'fontSize': '28px'}
+                                ),
+                            ], style={'flex': '1'})
+                        ], style={**CARD_STYLE, 'display': 'flex', 'alignItems': 'flex-end', 'gap': '24px'}),
+                        
+                        # Revenue & Booking Analysis Section
+                        html.Div([
+                            html.H2("Revenue & Booking Analysis", 
+                                    style=TEXT_STYLES['section_header']),
+                            html.Div([
+                                dcc.Graph(
+                                    id='monthly-revenue-chart', 
+                                    style={'width': '48%', 'display': 'inline-block', 'marginRight': '2%'}
+                                ),
+                                dcc.Graph(
+                                    id='booking-heatmap', 
+                                    style={'width': '48%', 'display': 'inline-block', 'marginLeft': '2%'}
+                                )
+                            ], style={'display': 'flex', 'justifyContent': 'center', 'alignItems': 'center', 'width': '100%'})
+                        ], style=CARD_STYLE),
+                        
+                        # Teacher Performance Analysis Section (moved before Demographics)
+                        html.Div([
+                            html.H2("Teacher Performance Analysis", 
+                                    style=TEXT_STYLES['section_header']),
+                            html.Div([
+                                dcc.Graph(
+                                    id='teacher-class-trend', 
+                                    style={'width': '48%', 'display': 'inline-block', 'marginRight': '2%'}
+                                ),
+                                dcc.Graph(
+                                    id='teacher-student-heatmap', 
+                                    style={'width': '48%', 'display': 'inline-block', 'marginLeft': '2%'}
+                                )
+                            ], style={'display': 'flex', 'justifyContent': 'center', 'alignItems': 'center', 'width': '100%'})
+                        ], style=CARD_STYLE),
+                        
+                        # Demographics Section (now after Teacher Performance)
+                        html.Div([
+                            html.H2("Demographics Analysis", 
+                                    style=TEXT_STYLES['section_header']),
+                            html.Div([
+                                html.Button('Gender Distribution', id='btn-gender', n_clicks=0, style=BUTTON_STYLE),
+                                html.Button('Age Distribution', id='btn-age', n_clicks=0, style=BUTTON_STYLE),
+                                html.Button('Course Distribution', id='btn-course', n_clicks=0, style=BUTTON_STYLE),
+                                html.Button('Region Distribution', id='btn-region', n_clicks=0, style=BUTTON_STYLE),
+                                html.Button('Age by Course Type', id='btn-age-course', n_clicks=0, style=BUTTON_STYLE)
+                            ], style={'textAlign': 'center', 'marginBottom': '24px'}),
+                            dcc.Graph(id='demographics-chart')
+                        ], style=CARD_STYLE)
+                    ], id='overview-content')
+                ]
             ),
-            dcc.Graph(
-                id='booking-heatmap', 
-                style={
-                    'width': '48%',  # Adjust width to leave proper spacing
-                    'display': 'inline-block',
-                    'marginLeft': '2%'
-                }
-            )
-        ], style={
-            'display': 'flex',
-            'justifyContent': 'center',  # Center the graphs horizontally
-            'alignItems': 'center',      # Center the graphs vertically
-            'width': '100%'              # Ensure full width usage
-        })
-    ], style=CARD_STYLE),
-    
-    # Teacher Performance Analysis Section
-    html.Div([
-        html.H2("Teacher Performance Analysis", 
-                style=TEXT_STYLES['section_header']),
-        html.Div([
-            dcc.Graph(
-                id='teacher-class-trend', 
-                style={
-                    'width': '48%',
-                    'display': 'inline-block',
-                    'marginRight': '2%',
-                    'height': '500px'
-                }
+            
+            # Operation & Finance Tab (existing)
+            dcc.Tab(
+                label='Operation & Finance',
+                value='operation',
+                style=TAB_STYLE,
+                selected_style=TAB_SELECTED_STYLE,
+                children=[
+                    html.Div([
+                        # ... existing operation content ...
+                    ], id='operation-content', style={'display': 'none'})
+                ]
             ),
-            dcc.Graph(
-                id='teacher-student-heatmap', 
-                style={
-                    'width': '48%',
-                    'display': 'inline-block',
-                    'marginLeft': '2%'
-                }
+            
+            # Operation & Finance Tab (existing)
+            dcc.Tab(
+                label='Marketing and Customer Support',
+                value='marketing',
+                style=TAB_STYLE,
+                selected_style=TAB_SELECTED_STYLE,
+                children=[
+                    html.Div([
+                        # ... existing operation content ...
+                    ], id='marketing-content', style={'display': 'none'})
+                ]
             )
-        ], style={
-            'display': 'flex',
-            'justifyContent': 'center',
-            'alignItems': 'center',
-            'width': '100%'
-        })
-    ], style=CARD_STYLE),
-    
-    # Demographics Section
-    html.Div([
-        html.H2("Demographics Analysis", 
-                style=TEXT_STYLES['section_header']),
-        html.Div([
-            html.Button('Gender Distribution', id='btn-gender', n_clicks=0, style=BUTTON_STYLE),
-            html.Button('Age Distribution', id='btn-age', n_clicks=0, style=BUTTON_STYLE),
-            html.Button('Course Distribution', id='btn-course', n_clicks=0, style=BUTTON_STYLE),
-            html.Button('Region Distribution', id='btn-region', n_clicks=0, style=BUTTON_STYLE),
-            html.Button('Age by Course Type', id='btn-age-course', n_clicks=0, style=BUTTON_STYLE)
-        ], style={'textAlign': 'center', 'marginBottom': '24px'}),
-        dcc.Graph(id='demographics-chart')
-    ], style=CARD_STYLE)
+        ],
+        style={
+            'backgroundColor': 'transparent',
+            'borderBottom': '1px solid #d6d6d6',
+            'marginBottom': '24px',
+            'padding': '0 24px'
+        }
+    ),
 ], style={
     'backgroundColor': COLOR_SCHEME['background'],
     'minHeight': '100vh',
     'padding': '24px',
     'fontFamily': '"Segoe UI", Arial, sans-serif'
 })
+
+# Update the tab visibility callback
+@app.callback(
+    [Output('glimpse-content', 'style'),
+     Output('overview-content', 'style'),
+     Output('operation-content', 'style')],
+    [Input('tabs', 'value')]
+)
+def render_content(tab):
+    if tab == 'glimpse':
+        return {'display': 'block', 'padding': '24px'}, {'display': 'none'}, {'display': 'none'}
+    elif tab == 'overview':
+        return {'display': 'none'}, {'display': 'block'}, {'display': 'none'}
+    elif tab == 'operation':
+        return {'display': 'none'}, {'display': 'none'}, {'display': 'block'}
+    return {'display': 'none'}, {'display': 'none'}, {'display': 'none'}
+
+# Add callbacks for the new overview graphs in Glimpse tab
+@app.callback(
+    Output('overview-revenue-trend', 'figure'),
+    [Input('tabs', 'value')]
+)
+def update_revenue_trend(tab):
+    if tab != 'glimpse':
+        return {}
+    
+    monthly_revenue = base_data.groupby(
+        base_data['Order_Date'].dt.strftime('%Y-%m')
+    )['Amount'].sum().reset_index()
+    
+    fig = go.Figure()
+    fig.add_trace(go.Scatter(
+        x=monthly_revenue['Order_Date'],
+        y=monthly_revenue['Amount'],
+        mode='lines+markers',
+        line=dict(color=COLOR_SCHEME['primary'], width=3),
+        marker=dict(size=8)
+    ))
+    
+    fig.update_layout(
+        title="Monthly Revenue Trend",
+        xaxis_title="Month",
+        yaxis_title="Revenue",
+        template='plotly_white',
+        plot_bgcolor='rgba(0,0,0,0)',
+        paper_bgcolor='rgba(0,0,0,0)'
+    )
+    
+    return fig
+
+@app.callback(
+    Output('overview-course-dist', 'figure'),
+    [Input('tabs', 'value')]
+)
+def update_course_dist(tab):
+    if tab != 'glimpse':
+        return {}
+    
+    course_dist = base_data['Course_Type_Name'].value_counts()
+    
+    fig = go.Figure(data=[go.Pie(
+        labels=course_dist.index,
+        values=course_dist.values,
+        hole=0.3,
+        marker_colors=[COLOR_SCHEME['primary'], COLOR_SCHEME['secondary']]
+    )])
+    
+    fig.update_layout(
+        title="Course Type Distribution",
+        template='plotly_white',
+        plot_bgcolor='rgba(0,0,0,0)',
+        paper_bgcolor='rgba(0,0,0,0)'
+    )
+    
+    return fig
+
+@app.callback(
+    Output('overview-gender-dist', 'figure'),
+    [Input('tabs', 'value')]
+)
+def update_gender_dist(tab):
+    if tab != 'glimpse':
+        return {}
+    
+    gender_dist = base_data['Customer_Gender'].value_counts()
+    
+    fig = go.Figure(data=[go.Pie(
+        labels=gender_dist.index,
+        values=gender_dist.values,
+        hole=0.3,
+        marker_colors=[COLOR_SCHEME['primary'], COLOR_SCHEME['secondary']]
+    )])
+    
+    fig.update_layout(
+        title="Gender Distribution",
+        template='plotly_white',
+        plot_bgcolor='rgba(0,0,0,0)',
+        paper_bgcolor='rgba(0,0,0,0)'
+    )
+    
+    return fig
+
+@app.callback(
+    Output('overview-age-dist', 'figure'),
+    [Input('tabs', 'value')]
+)
+def update_age_dist(tab):
+    if tab != 'glimpse':
+        return {}
+    
+    fig = go.Figure(data=[go.Histogram(
+        x=base_data['Customer_Age'],
+        nbinsx=20,
+        marker_color=COLOR_SCHEME['primary']
+    )])
+    
+    fig.update_layout(
+        title="Age Distribution",
+        xaxis_title="Age",
+        yaxis_title="Count",
+        template='plotly_white',
+        plot_bgcolor='rgba(0,0,0,0)',
+        paper_bgcolor='rgba(0,0,0,0)'
+    )
+    
+    return fig
 
 # Callback for Monthly Revenue Chart
 @app.callback(
