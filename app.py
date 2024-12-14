@@ -569,6 +569,93 @@ app.layout = html.Div([
                 children=[
                     html.Div([
                         # ... existing operation content ...
+                        # Filters section
+                        html.Div([
+                            html.Div([
+                                html.Label("Date Range", style=TEXT_STYLES['label']),
+                                dcc.DatePickerRange(
+                                    id='date-range-combined',
+                                    start_date=base_data['Order_Date'].min(),
+                                    end_date=base_data['Order_Date'].max(),
+                                    display_format='YYYY-MM-DD',
+                                    style={'zIndex': 1000, 'fontSize': '16px'}
+                                )
+                            ], style={'flex': '1', 'marginRight': '32px'}),
+                            
+                            html.Div([
+                                html.Label("Age Range", style=TEXT_STYLES['label']),
+                                dcc.RangeSlider(
+                                    id='age-range-demo',
+                                    min=DA_data['Age'].min(),
+                                    max=DA_data['Age'].max(),
+                                    step=1,
+                                    marks={i: {'label': str(i), 'style': {'color': COLOR_SCHEME['text'], 'fontSize': '14px'}} 
+                                           for i in range(int(DA_data['Age'].min()), int(DA_data['Age'].max()) + 1, 5)},
+                                    value=[DA_data['Age'].min(), DA_data['Age'].max()]
+                                )
+                            ], style={'flex': '1', 'marginRight': '24px'}),
+                            
+                            html.Div([
+                                html.Label("Course Type", style=TEXT_STYLES['label']),
+                                dcc.Dropdown(
+                                    id='course-type-combined',
+                                    options=[{'label': course, 'value': course} 
+                                           for course in base_data['Course_Type_Name'].unique()],
+                                    multi=True,
+                                    style={'borderRadius': '8px', 'fontSize': '28px'}
+                                )
+                            ], style={'flex': '1', 'marginRight': '24px'}),
+                            
+                            html.Div([
+                                html.Label("City", style=TEXT_STYLES['label']),
+                                dcc.Dropdown(
+                                    id='region-revenue',
+                                    options=[{'label': City, 'value': City} 
+                                           for City in DA_data['City'].unique()],
+                                    multi=True,
+                                    style={'borderRadius': '8px', 'fontSize': '28px'}
+                                )
+                            ], style={'flex': '1', 'marginRight': '24px'}),
+                            
+                            html.Div([
+                                html.Label("Gender", style=TEXT_STYLES['label']),
+                                dcc.Dropdown(
+                                    id='gender-dropdown',
+                                    options=[{'label': gender, 'value': gender} 
+                                           for gender in base_data['Customer_Gender'].unique()],
+                                    multi=True,
+                                    style={'borderRadius': '8px', 'fontSize': '28px'}
+                                ),
+                            ], style={'flex': '1'})
+                        ], style={**CARD_STYLE, 'display': 'flex', 'alignItems': 'flex-end', 'gap': '24px'}),
+                        
+                        # Revenue & Booking Analysis Section
+                        html.Div([
+                            html.H2("Revenue & Booking Analysis", 
+                                    style=TEXT_STYLES['section_header']),
+                            html.Div([
+                                dcc.Graph(
+                                    id='monthly-revenue-chart_1', 
+                                    style={'width': '48%', 'display': 'inline-block', 'marginRight': '2%'}
+                                ),
+                                dcc.Graph(
+                                    id='booking-heatmap_1', 
+                                    style={'width': '48%', 'display': 'inline-block', 'marginLeft': '2%'}
+                                )
+                            ], style={'display': 'flex', 'justifyContent': 'center', 'alignItems': 'center', 'width': '100%'})
+                        ], style=CARD_STYLE),
+                        
+                        # Teacher Performance Analysis Section (moved before Demographics)
+                        html.Div([
+                            html.H2("Teacher Performance Analysis", 
+                                    style=TEXT_STYLES['section_header']),
+                            html.Div([
+                                dcc.Graph(
+                                    id='teacher-class-trend_1', 
+                                    style={'width': '98%', 'display': 'inline-block', 'marginRight': '2%'}
+                                )
+                            ], style={'display': 'flex', 'justifyContent': 'center', 'alignItems': 'center', 'width': '100%'})
+                        ], style=CARD_STYLE),
                     ], id='operation-content', style={'display': 'none'})
                 ]
             ),
@@ -582,6 +669,97 @@ app.layout = html.Div([
                 children=[
                     html.Div([
                         # ... existing operation content ...
+                        
+                        # Filters section
+                        html.Div([
+                            html.Div([
+                                html.Label("Date Range", style=TEXT_STYLES['label']),
+                                dcc.DatePickerRange(
+                                    id='date-range-combined',
+                                    start_date=base_data['Order_Date'].min(),
+                                    end_date=base_data['Order_Date'].max(),
+                                    display_format='YYYY-MM-DD',
+                                    style={'zIndex': 1000, 'fontSize': '16px'}
+                                )
+                            ], style={'flex': '1', 'marginRight': '32px'}),
+                            
+                            html.Div([
+                                html.Label("Age Range", style=TEXT_STYLES['label']),
+                                dcc.RangeSlider(
+                                    id='age-range-demo',
+                                    min=DA_data['Age'].min(),
+                                    max=DA_data['Age'].max(),
+                                    step=1,
+                                    marks={i: {'label': str(i), 'style': {'color': COLOR_SCHEME['text'], 'fontSize': '14px'}} 
+                                           for i in range(int(DA_data['Age'].min()), int(DA_data['Age'].max()) + 1, 5)},
+                                    value=[DA_data['Age'].min(), DA_data['Age'].max()]
+                                )
+                            ], style={'flex': '1', 'marginRight': '24px'}),
+                            
+                            html.Div([
+                                html.Label("Course Type", style=TEXT_STYLES['label']),
+                                dcc.Dropdown(
+                                    id='course-type-combined',
+                                    options=[{'label': course, 'value': course} 
+                                           for course in base_data['Course_Type_Name'].unique()],
+                                    multi=True,
+                                    style={'borderRadius': '8px', 'fontSize': '28px'}
+                                )
+                            ], style={'flex': '1', 'marginRight': '24px'}),
+                            
+                            html.Div([
+                                html.Label("City", style=TEXT_STYLES['label']),
+                                dcc.Dropdown(
+                                    id='region-revenue',
+                                    options=[{'label': City, 'value': City} 
+                                           for City in DA_data['City'].unique()],
+                                    multi=True,
+                                    style={'borderRadius': '8px', 'fontSize': '28px'}
+                                )
+                            ], style={'flex': '1', 'marginRight': '24px'}),
+                            
+                            html.Div([
+                                html.Label("Gender", style=TEXT_STYLES['label']),
+                                dcc.Dropdown(
+                                    id='gender-dropdown',
+                                    options=[{'label': gender, 'value': gender} 
+                                           for gender in base_data['Customer_Gender'].unique()],
+                                    multi=True,
+                                    style={'borderRadius': '8px', 'fontSize': '28px'}
+                                ),
+                            ], style={'flex': '1'})
+                        ], style={**CARD_STYLE, 'display': 'flex', 'alignItems': 'flex-end', 'gap': '24px'}),
+                        
+                        # Revenue & Booking Analysis Section
+                        html.Div([
+                            html.H2("Booking Analysis and Teacher Performance Analysis", 
+                                    style=TEXT_STYLES['section_header']),
+                            html.Div([
+                                dcc.Graph(
+                                    id='booking-heatmap_2', 
+                                    style={'width': '48%', 'display': 'inline-block', 'marginLeft': '2%'}
+                                ),
+                                dcc.Graph(
+                                    id='teacher-student-heatmap_1', 
+                                    style={'width': '48%', 'display': 'inline-block', 'marginLeft': '2%'}
+                                )
+                            ], style={'display': 'flex', 'justifyContent': 'center', 'alignItems': 'center', 'width': '100%'})
+                        ], style=CARD_STYLE),
+
+                        
+                        # Demographics Section (now after Teacher Performance)
+                        html.Div([
+                            html.H2("Demographics Analysis", 
+                                    style=TEXT_STYLES['section_header']),
+                            html.Div([
+                                html.Button('Gender Distribution', id='btn-gender', n_clicks=0, style=BUTTON_STYLE),
+                                html.Button('Age Distribution', id='btn-age', n_clicks=0, style=BUTTON_STYLE),
+                                html.Button('Course Distribution', id='btn-course', n_clicks=0, style=BUTTON_STYLE),
+                                html.Button('Region Distribution', id='btn-region', n_clicks=0, style=BUTTON_STYLE),
+                                html.Button('Age by Course Type', id='btn-age-course', n_clicks=0, style=BUTTON_STYLE)
+                            ], style={'textAlign': 'center', 'marginBottom': '24px'}),
+                            dcc.Graph(id='demographics-chart_1')
+                        ], style=CARD_STYLE)
                     ], id='marketing-content', style={'display': 'none'})
                 ]
             )
@@ -604,17 +782,20 @@ app.layout = html.Div([
 @app.callback(
     [Output('glimpse-content', 'style'),
      Output('overview-content', 'style'),
-     Output('operation-content', 'style')],
+     Output('operation-content', 'style'),
+     Output('marketing-content', 'style')],
     [Input('tabs', 'value')]
 )
 def render_content(tab):
     if tab == 'glimpse':
-        return {'display': 'block', 'padding': '24px'}, {'display': 'none'}, {'display': 'none'}
+        return {'display': 'block', 'padding': '24px'}, {'display': 'none'}, {'display': 'none'}, {'display': 'none'}
     elif tab == 'overview':
-        return {'display': 'none'}, {'display': 'block'}, {'display': 'none'}
+        return {'display': 'none'}, {'display': 'block'}, {'display': 'none'}, {'display': 'none'}
     elif tab == 'operation':
-        return {'display': 'none'}, {'display': 'none'}, {'display': 'block'}
-    return {'display': 'none'}, {'display': 'none'}, {'display': 'none'}
+        return {'display': 'none'}, {'display': 'none'}, {'display': 'block'}, {'display': 'none'}
+    elif tab == 'marketing':
+        return {'display': 'none'}, {'display': 'none'}, {'display': 'none'}, {'display': 'block'}
+    return {'display': 'none'}, {'display': 'none'}, {'display': 'none'}, {'display': 'none'}
 
 # Add callbacks for the new overview graphs in Glimpse tab
 @app.callback(
@@ -729,6 +910,7 @@ def update_age_dist(tab):
 # Callback for Monthly Revenue Chart
 @app.callback(
     Output('monthly-revenue-chart', 'figure'),
+    Output('monthly-revenue-chart_1', 'figure'),
     [Input('date-range-combined', 'start_date'),
      Input('date-range-combined', 'end_date'),
      Input('age-range-demo', 'value'),
@@ -809,12 +991,12 @@ def update_monthly_revenue(start_date, end_date, age_range, course_types, cities
             'yanchor': 'top',
             'font': dict(size=24)
         },
-        height=600,  # 增加圖表高度
+        height=500,  # 增加圖表高度
         margin=dict(
             l=100,   # 增加左邊距
             r=100,   # 增加右邊距
             t=100,   # 顯著增加上邊距
-            b=150    # 增加下邊距
+            b=100    # 增加下邊距
         ),
         legend=dict(
             orientation="h",
@@ -864,11 +1046,12 @@ def update_monthly_revenue(start_date, end_date, age_range, course_types, cities
         ticklabelposition="outside"
     )
 
-    return fig
+    return fig, fig
 
 # Callback for Booking Heatmap
 @app.callback(
     Output('booking-heatmap', 'figure'),
+    Output('booking-heatmap_1', 'figure'),
     [Input('date-range-combined', 'start_date'),
      Input('date-range-combined', 'end_date'),
      Input('age-range-demo', 'value'),
@@ -939,11 +1122,110 @@ def update_booking_heatmap(start_date, end_date, age_range, course_types, cities
             'yanchor': 'top',
             'font': dict(size=24)
         },
-        height=600,  # 增加圖表高度
+        height=500,  # 增加圖表高度
         margin=dict(
             l=100,   # 增加左邊距
             r=100,   # 增加右邊距
-            t=150,   # 顯著增加上邊距
+            t=100,   # 顯著增加上邊距
+            b=100    # 增加下邊距
+        ),
+        xaxis=dict(
+            tickangle=45,
+            tickfont=dict(size=18),
+            titlefont=dict(size=20),
+            title_standoff=30,  # 增加軸標題與圖表的距離
+            dtick="M1",  # 設置月份間隔
+            tickformat="%b"  # 格式化日期顯示
+        ),
+        yaxis=dict(
+            tickfont=dict(size=18),
+            titlefont=dict(size=20),
+            title_standoff=30,
+            title_text='Day of Week',
+            rangemode='tozero'
+        )
+    )
+
+    return fig, fig
+
+# Callback for Booking Heatmap
+@app.callback(
+    Output('booking-heatmap_2', 'figure'),
+    [Input('date-range-combined', 'start_date'),
+     Input('date-range-combined', 'end_date'),
+     Input('age-range-demo', 'value'),
+     Input('course-type-combined', 'value'),
+     Input('region-revenue', 'value'),
+     Input('gender-dropdown', 'value')],
+    prevent_initial_call=False
+)
+def update_booking_heatmap(start_date, end_date, age_range, course_types, cities, genders):
+    filtered_df = base_data.copy()
+    
+    # Apply filters
+    if start_date and end_date:
+        filtered_df = filtered_df[(filtered_df['Order_Date'] >= start_date) & (filtered_df['Order_Date'] <= end_date)]
+    if age_range:
+        filtered_df = filtered_df[(filtered_df['Customer_Age'] >= age_range[0]) & (filtered_df['Customer_Age'] <= age_range[1])]
+    if course_types:
+        filtered_df = filtered_df[filtered_df['Course_Type_Name'].isin(course_types)]
+    if cities:
+        filtered_df = filtered_df[filtered_df['City'].isin(cities)]
+    if genders:
+        filtered_df = filtered_df[filtered_df['Customer_Gender'].isin(genders)]
+
+    # Add day and month columns
+    filtered_df['Day_of_Week'] = filtered_df['Order_Date'].dt.day_name()
+    filtered_df['Month'] = filtered_df['Order_Date'].dt.strftime('%Y-%m')
+
+    # Group data for heatmap
+    heatmap_data = filtered_df.groupby(['Day_of_Week', 'Month'])['Amount'].sum().reset_index()
+
+    # Define the correct order for days and months
+    days_order = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday']
+    #months_order = [
+    #    'January', 'February', 'March', 'April', 'May', 'June',
+    #    'July', 'August', 'September', 'October', 'November', 'December'
+    #]
+
+    # Ensure correct ordering and add missing combinations
+    all_combinations = pd.DataFrame(list(itertools.product(days_order)), columns=['Day_of_Week'])
+    heatmap_data = all_combinations.merge(heatmap_data, on=['Day_of_Week'], how='left').fillna(0)
+
+    # Pivot the data for the heatmap
+    heatmap_pivot = heatmap_data.pivot(index='Day_of_Week', columns='Month', values='Amount').fillna(0)
+
+    # Reindex rows and columns explicitly
+    heatmap_pivot = heatmap_pivot.reindex(index=days_order)
+
+    # Create heatmap
+    fig = px.imshow(
+        heatmap_pivot,
+        labels=dict( y="Day of the Week", color="Total Amount"),
+        y=days_order,
+        color_continuous_scale=[
+            [0, "grey"],
+            [0.5, "#ffe5bd"],
+            [1, "#EDB265"]
+        ],
+        zmin=0,
+        zmax=120000,
+        title="Heatmap of Transaction Amount"
+    )
+    fig.update_layout(
+        title={
+            'text': 'Student Order Timing Analysis',
+            'y': 0.98,
+            'x': 0.5,
+            'xanchor': 'center',
+            'yanchor': 'top',
+            'font': dict(size=24)
+        },
+        height=500,  # 增加圖表高度
+        margin=dict(
+            l=100,   # 增加左邊距
+            r=100,   # 增加右邊距
+            t=100,   # 顯著增加上邊距
             b=100    # 增加下邊距
         ),
         xaxis=dict(
@@ -968,6 +1250,7 @@ def update_booking_heatmap(start_date, end_date, age_range, course_types, cities
 # Callback for Demographics Chart
 @app.callback(
     Output('demographics-chart', 'figure'),
+    Output('demographics-chart_1', 'figure'),
     [Input('date-range-combined', 'start_date'),
      Input('date-range-combined', 'end_date'),
      Input('age-range-demo', 'value'),
@@ -1022,7 +1305,7 @@ def update_demographics(start_date, end_date, age_range, course_types, cities,
             showarrow=False,
             font=dict(size=28, color=COLOR_SCHEME['text'])
         )
-        return fig
+        return fig, fig
 
     # Create visualizations based on button clicked
     if button_id == 'btn-gender':
@@ -1190,7 +1473,7 @@ def update_demographics(start_date, end_date, age_range, course_types, cities,
         )
     )
 
-    return fig
+    return fig, fig
 
 # Update the chart styling function with larger fonts
 def update_chart_layout(fig):
@@ -1215,11 +1498,12 @@ def update_chart_layout(fig):
         hoverlabel={'font': {'size': 28}},
         margin=dict(t=50, l=50, r=50, b=50)
     )
-    return fig
+    return fig, fig
 
 # Teacher Class Trend Chart
 @app.callback(
     Output('teacher-class-trend', 'figure'),
+    Output('teacher-class-trend_1', 'figure'),
     [Input('date-range-combined', 'start_date'),
      Input('date-range-combined', 'end_date'),
      Input('age-range-demo', 'value'),
@@ -1381,11 +1665,12 @@ def update_teacher_trend(start_date, end_date, age_range, course_types, cities, 
         paper_bgcolor='rgba(0,0,0,0)'
     )
 
-    return fig
+    return fig, fig
 
 # Teacher Student Distribution Heatmap
 @app.callback(
     Output('teacher-student-heatmap', 'figure'),
+    Output('teacher-student-heatmap_1', 'figure'),
     [Input('date-range-combined', 'start_date'),
      Input('date-range-combined', 'end_date'),
      Input('age-range-demo', 'value'),
@@ -1539,7 +1824,7 @@ def update_teacher_trend(start_date, end_date, age_range, course_types, cities, 
     #    tickvals=list(range(len(heatmap_data.index)))
     #)
 
-    return fig
+    return fig, fig
 
 if __name__ == '__main__':
     app.run(debug=True)
