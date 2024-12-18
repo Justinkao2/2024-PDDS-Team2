@@ -6,6 +6,7 @@ import plotly.express as px
 import plotly.colors as pc
 from plotly.subplots import make_subplots 
 import itertools
+import dash_bootstrap_components as dbc
 
 # Define styles at the top of the file
 COLOR_SCHEME = {
@@ -510,43 +511,182 @@ app.layout = html.Div([
                                 ),
                             ], style={'flex': '1'})
                         ], style={**CARD_STYLE, 'display': 'flex', 'alignItems': 'flex-end', 'gap': '24px'}),
-                        
                         # Revenue & Booking Analysis Section
                         html.Div([
-                            html.H2("Revenue & Booking Analysis", 
-                                    style=TEXT_STYLES['section_header']),
+                            html.H2("Revenue & Booking Analysis", style=TEXT_STYLES['section_header']),
                             html.Div([
-                                dcc.Graph(
-                                    id='monthly-revenue-chart', 
-                                    style={'width': '48%', 'display': 'inline-block', 'marginRight': '2%'}
-                                ),
-                                dcc.Graph(
-                                    id='booking-heatmap', 
-                                    style={'width': '48%', 'display': 'inline-block', 'marginLeft': '2%'}
-                                )
+                                html.Div([
+                                    dcc.Graph(
+                                        id='monthly-revenue-chart', 
+                                        style={'width': '100%', 'height': '600px'}
+                                    ),
+                                    html.Span(
+                                        "ⓘ",  # Info icon
+                                        id="info-icon-monthly-revenue-chart",
+                                        style={
+                                            "fontSize": "20px",
+                                            "cursor": "pointer",
+                                            "color": "#007BFF",
+                                            "position": "relative",
+                                            "top": "-50px",
+                                            "left": "10px"
+                                        }
+                                    ),
+                                    dbc.Tooltip(
+                                        [
+                                            html.Ul([
+                                                html.Li("Users: Operating Officers, Finance Team"),
+                                                html.Li("Purpose: Monitor revenue and growth trends to guide resource allocation and planning."),
+                                                html.Li("Chart: Combination (Bar + Line)"),
+                                                html.Ul([
+                                                    html.Li("Bar Chart: X = Months, Y = Monthly Revenue"),
+                                                    html.Li("Line Chart: Y = Growth Rate (%)")
+                                                ]),
+                                                html.Li("Insights:"),
+                                                html.Ul([
+                                                    html.Li("Identify peak revenue months and contributing factors."),
+                                                    html.Li("Track trends in revenue growth or decline."),
+                                                    html.Li("Assess effectiveness of campaigns and seasonal strategies.")
+                                                ])
+                                            ])
+                                        ],
+                                        target="info-icon-monthly-revenue-chart",
+                                        placement="right",
+                                        style={"fontSize": "14px"}
+                                    )
+                                ], style={"position": "relative", "width": "48%", "display": "inline-block", "marginRight": "2%"}),
+                                html.Div([
+                                    dcc.Graph(
+                                        id='booking-heatmap', 
+                                        style={'width': '100%', 'height': '600px'}
+                                    ),
+                                    html.Span(
+                                        "ⓘ",  # Info icon
+                                        id="info-icon-booking-heatmap",
+                                        style={
+                                            "fontSize": "20px",
+                                            "cursor": "pointer",
+                                            "color": "#007BFF",
+                                            "position": "relative",
+                                            "top": "-50px",
+                                            "left": "10px"
+                                        }
+                                    ),
+                                    dbc.Tooltip(
+                                        [
+                                            html.Ul([
+                                                html.Li("Users: Marketing, Customer Support Teams"),
+                                                html.Li("Purpose: Analyze student order patterns over time."),
+                                                html.Li("Chart: Heatmap"),
+                                                html.Ul([
+                                                    html.Li("X-Axis: Months (January to December)."),
+                                                    html.Li("Y-Axis: Days of the week (Monday to Sunday)."),
+                                                    html.Li("Color Scale: Represents the volume of orders placed.")
+                                                ]),
+                                                html.Li("Insights:"),
+                                                html.Ul([
+                                                    html.Li("Detect peak days and months for student purchases."),
+                                                    html.Li("Align marketing efforts and promotions with high-order periods."),
+                                                    html.Li("Adjust operational resources to cater to peak demand times, ensuring seamless service.")
+                                                ])
+                                            ])
+                                        ],
+                                        target="info-icon-booking-heatmap",
+                                        placement="right",
+                                        style={"fontSize": "14px"}
+                                    )
+
+                                ], style={"position": "relative", "width": "48%", "display": "inline-block", "marginLeft": "2%"})
                             ], style={'display': 'flex', 'justifyContent': 'center', 'alignItems': 'center', 'width': '100%'})
                         ], style=CARD_STYLE),
-                        
-                        # Teacher Performance Analysis Section (moved before Demographics)
+
+                        # Teacher Performance Analysis Section
                         html.Div([
-                            html.H2("Teacher Performance Analysis", 
-                                    style=TEXT_STYLES['section_header']),
+                            html.H2("Teacher Performance Analysis", style=TEXT_STYLES['section_header']),
                             html.Div([
-                                dcc.Graph(
-                                    id='teacher-class-trend', 
-                                    style={'width': '48%', 'display': 'inline-block', 'marginRight': '2%'}
-                                ),
-                                dcc.Graph(
-                                    id='teacher-student-heatmap', 
-                                    style={'width': '48%', 'display': 'inline-block', 'marginLeft': '2%'}
-                                )
+                                html.Div([
+                                    dcc.Graph(
+                                        id='teacher-class-trend', 
+                                        style={'width': '100%', 'height': '600px'}
+                                    ),
+                                    html.Span(
+                                        "ⓘ",  # Info icon
+                                        id="info-icon-teacher-class-trend",
+                                        style={
+                                            "fontSize": "20px",
+                                            "cursor": "pointer",
+                                            "color": "#007BFF",
+                                            "position": "relative",
+                                            "top": "-50px",
+                                            "left": "10px"
+                                        }
+                                    ),
+                                    dbc.Tooltip(
+                                        [
+                                        html.Ul([
+                                            html.Li("Users: Operating Officers, Finance Team"),
+                                            html.Li("Purpose: Analyze top 5 teachers' sales and monthly distribution for better planning."),
+                                            html.Li("Chart: Stacked Bar (X: Teacher names, Y: Courses sold, Monthly data)"),
+                                            html.Li("Insights:"),
+                                            html.Ul([
+                                                html.Li("Highlight top-performing teachers."),
+                                                html.Li("Understand sales seasonality."),
+                                                html.Li("Identify areas for support or incentives.")
+                                            ])
+                                        ])
+                                        ],
+                                        target="info-icon-teacher-class-trend",
+                                        placement="right",
+                                        style={"fontSize": "14px"}
+                                    )
+                                ], style={"position": "relative", "width": "48%", "display": "inline-block", "marginRight": "2%"}),
+                                html.Div([
+                                    dcc.Graph(
+                                        id='teacher-student-heatmap', 
+                                        style={'width': '100%', 'height': '600px'}
+                                    ),
+                                    html.Span(
+                                        "ⓘ",  # Info icon
+                                        id="info-icon-teacher-student-heatmap",
+                                        style={
+                                            "fontSize": "20px",
+                                            "cursor": "pointer",
+                                            "color": "#007BFF",
+                                            "position": "relative",
+                                            "top": "-50px",
+                                            "left": "10px"
+                                        }
+                                    ),
+                                    dbc.Tooltip(
+                                        [
+                                            html.Ul([
+                                                html.Li("Users: Marketing, Customer Support Teams"),
+                                                html.Li("Purpose: Analyze age distribution of students for top 5 teachers."),
+                                                html.Li("Chart: Heatmap"),
+                                                html.Ul([
+                                                    html.Li("X-Axis: Age groups (0-20, 21-30, 31-40, 41-50, 50+)"),
+                                                    html.Li("Y-Axis: Top 5 teachers"),
+                                                    html.Li("Color Scale: Unique students per age group")
+                                                ]),
+                                                html.Li("Insights:"),
+                                                html.Ul([
+                                                    html.Li("Identify primary audience age groups for each teacher."),
+                                                    html.Li("Highlight underserved age demographics."),
+                                                    html.Li("Support tailored course design and learning experiences.")
+                                                ])
+                                            ])
+                                        ],
+                                        target="info-icon-teacher-student-heatmap",
+                                        placement="right",
+                                        style={"fontSize": "14px"}
+                                    ),                                   
+                                ], style={"position": "relative", "width": "48%", "display": "inline-block", "marginLeft": "2%"})
                             ], style={'display': 'flex', 'justifyContent': 'center', 'alignItems': 'center', 'width': '100%'})
                         ], style=CARD_STYLE),
-                        
-                        # Demographics Section (now after Teacher Performance)
+
+                        # Student Demographic Analysis Section
                         html.Div([
-                            html.H2("Demographics Analysis", 
-                                    style=TEXT_STYLES['section_header']),
+                            html.H2("Student Demographic Analysis", style=TEXT_STYLES['section_header']),
                             html.Div([
                                 html.Button('Gender Distribution', id='btn-gender', n_clicks=0, style=BUTTON_STYLE),
                                 html.Button('Age Distribution', id='btn-age', n_clicks=0, style=BUTTON_STYLE),
@@ -554,12 +694,54 @@ app.layout = html.Div([
                                 html.Button('Region Distribution', id='btn-region', n_clicks=0, style=BUTTON_STYLE),
                                 html.Button('Age by Course Type', id='btn-age-course', n_clicks=0, style=BUTTON_STYLE)
                             ], style={'textAlign': 'center', 'marginBottom': '24px'}),
-                            dcc.Graph(id='demographics-chart')
+                            html.Div([
+                                html.Div([
+                                    dcc.Graph(
+                                        id='demographics-chart', 
+                                        style={'width': '100%', 'height': '600px'}
+                                    ),
+                                    html.Span(
+                                        "ⓘ",  # Info icon
+                                        id="info-icon-demographics-chart",
+                                        style={
+                                            "fontSize": "20px",
+                                            "cursor": "pointer",
+                                            "color": "#007BFF",
+                                            "position": "left",
+                                            "top": "-50px",
+                                            "left": "-10px"
+                                        }
+                                    ),
+                                    dbc.Tooltip(
+                                        [
+                                            html.Ul([
+                                                html.Li("Users: Marketing, Customer Support Teams"),
+                                                html.Li("Purpose: Understand student demographics (gender, age, region) for personalized service and growth."),
+                                                html.Li("Chart Details:"),
+                                                html.Ul([
+                                                    html.Li("Pie Chart: Gender distribution (Male, Female)"),
+                                                    html.Li("Histogram: X = Age groups, Y = Number of students"),
+                                                    html.Li("Bar Chart: X = Geographic regions, Y = Students per region"),
+                                                    html.Li("Interactive: Demographic filters with buttons")
+                                                ]),
+                                                html.Li("Insights:"),
+                                                html.Ul([
+                                                    html.Li("Understand gender and age composition for marketing and course customization."),
+                                                    html.Li("Identify regions with high/low student participation."),
+                                                    html.Li("Support regional and demographic-specific outreach.")
+                                                ])
+                                            ])
+                                        ],
+                                        target="info-icon-demographics-chart",
+                                        placement="right",
+                                        style={"fontSize": "14px"}
+                                    ),
+                                ], style={"position": "relative", "width": "100%", "display": "inline-block"})
+                            ], style={'textAlign': 'left', 'marginBottom': '24px'})
                         ], style=CARD_STYLE)
                     ], id='overview-content')
                 ]
-            ),
-            
+            ),     
             # Operation & Finance Tab (existing)
             dcc.Tab(
                 label='Operation & Finance',
@@ -631,30 +813,84 @@ app.layout = html.Div([
                         
                         # Revenue & Booking Analysis Section
                         html.Div([
-                            html.H2("Revenue & Booking Analysis", 
-                                    style=TEXT_STYLES['section_header']),
-                            html.Div([
-                                dcc.Graph(
-                                    id='operation-monthly-revenue-chart', 
-                                    style={'width': '48%', 'display': 'inline-block', 'marginRight': '2%'}
-                                ),
-                                dcc.Graph(
-                                    id='operation-booking-heatmap', 
-                                    style={'width': '48%', 'display': 'inline-block', 'marginLeft': '2%'}
+                            html.H2("Revenue & Booking Analysis", style=TEXT_STYLES['section_header']),
+                                html.Div([
+                                    dcc.Graph(
+                                        id='operation-monthly-revenue-chart',
+                                        style={'width': '100%', 'height': '600px'}
+                                    ),
+                                    html.Span(
+                                        "ⓘ",  # Info icon
+                                        id="info-icon-operation-monthly-revenue-chart",
+                                        style={
+                                            "fontSize": "20px",
+                                            "cursor": "pointer",
+                                            "color": "#007BFF",
+                                            "position": "relative",  # 相對定位
+                                            "top": "-50px",          # 微調位置
+                                            "left": "10px"
+                                        }
+                                    ),
+                                    dbc.Tooltip(
+                                        [
+                                            html.Ul([
+                                                html.Li("Users: Operating Officers, Finance Team"),
+                                                html.Li("Purpose: Monitor revenue and growth trends to guide resource allocation and planning."),
+                                                html.Li("Chart: Combination (Bar + Line)"),
+                                                html.Ul([
+                                                    html.Li("Bar Chart: X = Months, Y = Monthly Revenue"),
+                                                    html.Li("Line Chart: Y = Growth Rate (%)")
+                                                ]),
+                                                html.Li("Insights:"),
+                                                html.Ul([
+                                                    html.Li("Identify peak revenue months and contributing factors."),
+                                                    html.Li("Track trends in revenue growth or decline."),
+                                                    html.Li("Assess effectiveness of campaigns and seasonal strategies.")
+                                                ])
+                                            ])
+                                        ],
+                                        target="info-icon-operation-monthly-revenue-chart",
+                                        placement="right",
+                                        style={"fontSize": "14px"}
+                                    )
+ 
+                                 ], style={"position": "relative", "width": "48%", "display": "inline-block", "marginRight": "2%"}),
+                                html.Div([
+                                    dcc.Graph(
+                                        id='operation-teacher-class-trend', 
+                                        style={'width': '100%', 'display': 'inline-block', 'marginRight': '2%'}
+                                    ),
+                                    html.Span(
+                                        "ⓘ",  # Info icon
+                                        id="info-icon-operation-teacher-class-trend",
+                                        style={
+                                            "fontSize": "20px",
+                                            "cursor": "pointer",
+                                            "color": "#007BFF",
+                                            "position": "relative",  # 相對定位
+                                            "top": "-50px",          # 微調位置
+                                            "left": "10px"
+                                        }
+                                    ),
+                                    dbc.Tooltip(
+                                    [
+                                        html.Ul([
+                                            html.Li("Users: Operating Officers, Finance Team"),
+                                            html.Li("Purpose: Analyze top 5 teachers' sales and monthly distribution for better planning."),
+                                            html.Li("Chart: Stacked Bar (X: Teacher names, Y: Courses sold, Monthly data)"),
+                                            html.Li("Insights:"),
+                                            html.Ul([
+                                                html.Li("Highlight top-performing teachers."),
+                                                html.Li("Understand sales seasonality."),
+                                                html.Li("Identify areas for support or incentives.")
+                                            ])
+                                        ])
+                                    ],
+                                    target="info-icon-operation-teacher-class-trend",
+                                    placement="right",
+                                    style={"fontSize": "14px"}
                                 )
-                            ], style={'display': 'flex', 'justifyContent': 'center', 'alignItems': 'center', 'width': '100%'})
-                        ], style=CARD_STYLE),
-                        
-                        # Teacher Performance Analysis Section (moved before Demographics)
-                        html.Div([
-                            html.H2("Teacher Performance Analysis", 
-                                    style=TEXT_STYLES['section_header']),
-                            html.Div([
-                                dcc.Graph(
-                                    id='operation-teacher-class-trend', 
-                                    style={'width': '98%', 'display': 'inline-block', 'marginRight': '2%'}
-                                )
-                            ], style={'display': 'flex', 'justifyContent': 'center', 'alignItems': 'center', 'width': '100%'})
+                                ], style={"position": "relative", "width": "48%", "display": "inline-block", "marginLeft": "2%"})
                         ], style=CARD_STYLE),
                     ], id='operation-content', style={'display': 'none'})
                 ]
@@ -728,26 +964,102 @@ app.layout = html.Div([
                             ], style={'flex': '1'})
                         ], style={**CARD_STYLE, 'display': 'flex', 'alignItems': 'flex-end', 'gap': '24px'}),
                         
-                        # Revenue & Booking Analysis Section
+                        # Student Booking Time and Recommend Teacher Analysis
                         html.Div([
-                            html.H2("Booking Analysis and Teacher Performance Analysis", 
-                                    style=TEXT_STYLES['section_header']),
+                            html.H2(
+                                "Student Booking Time and Recommend Teacher Analysis", 
+                                style=TEXT_STYLES['section_header']
+                            ),
                             html.Div([
-                                dcc.Graph(
-                                    id='marketing-booking-heatmap_2', 
-                                    style={'width': '48%', 'display': 'inline-block', 'marginLeft': '2%'}
-                                ),
-                                dcc.Graph(
-                                    id='marketing-teacher-student-heatmap', 
-                                    style={'width': '48%', 'display': 'inline-block', 'marginLeft': '2%'}
-                                )
+                                html.Div([
+                                    dcc.Graph(
+                                        id='marketing-booking-heatmap', 
+                                        style={'width': '100%', 'height': '600px'}
+                                    ),
+                                    html.Span(
+                                        "ⓘ",  # Info icon
+                                        id="info-icon-marketing-booking-heatmap",
+                                        style={
+                                            "fontSize": "20px",
+                                            "cursor": "pointer",
+                                            "color": "#007BFF",
+                                            "position": "relative",  # 相對定位
+                                            "top": "-50px",          # 微調位置
+                                            "left": "10px"
+                                        }
+                                    ),
+                                    dbc.Tooltip(
+                                        [
+                                            html.Ul([
+                                                html.Li("Users: Marketing, Customer Support Teams"),
+                                                html.Li("Purpose: Analyze student order patterns over time."),
+                                                html.Li("Chart: Heatmap"),
+                                                html.Ul([
+                                                    html.Li("X-Axis: Months (January to December)."),
+                                                    html.Li("Y-Axis: Days of the week (Monday to Sunday)."),
+                                                    html.Li("Color Scale: Represents the volume of orders placed.")
+                                                ]),
+                                                html.Li("Insights:"),
+                                                html.Ul([
+                                                    html.Li("Detect peak days and months for student purchases."),
+                                                    html.Li("Align marketing efforts and promotions with high-order periods."),
+                                                    html.Li("Adjust operational resources to cater to peak demand times, ensuring seamless service.")
+                                                ])
+                                            ])
+                                        ],
+                                        target="info-icon-marketing-booking-heatmap",
+                                        placement="right",
+                                        style={"fontSize": "14px"}
+                                    )
+                                ], style={"position": "relative", "width": "48%", "display": "inline-block", "marginRight": "2%"}),
+
+                                html.Div([
+                                    dcc.Graph(
+                                        id='marketing-teacher-student-heatmap', 
+                                        style={'width': '100%', 'height': '600px'}
+                                    ),
+                                    html.Span(
+                                        "ⓘ",  # Info icon
+                                        id="info-icon-marketing-teacher-student-heatmap",
+                                        style={
+                                            "fontSize": "20px",
+                                            "cursor": "pointer",
+                                            "color": "#007BFF",
+                                            "position": "relative",  # 相對定位
+                                            "top": "-50px",          # 微調位置
+                                            "left": "10px"
+                                        }
+                                    ),
+                                    dbc.Tooltip(
+                                        [
+                                            html.Ul([
+                                                html.Li("Users: Marketing, Customer Support Teams"),
+                                                html.Li("Purpose: Analyze age distribution of students for top 5 teachers."),
+                                                html.Li("Chart: Heatmap"),
+                                                html.Ul([
+                                                    html.Li("X-Axis: Age groups (0-20, 21-30, 31-40, 41-50, 50+)"),
+                                                    html.Li("Y-Axis: Top 5 teachers"),
+                                                    html.Li("Color Scale: Unique students per age group")
+                                                ]),
+                                                html.Li("Insights:"),
+                                                html.Ul([
+                                                    html.Li("Identify primary audience age groups for each teacher."),
+                                                    html.Li("Highlight underserved age demographics."),
+                                                    html.Li("Support tailored course design and learning experiences.")
+                                                ])
+                                            ])
+                                        ],
+                                        target="info-icon-marketing-teacher-student-heatmap",
+                                        placement="right",
+                                        style={"fontSize": "14px"}
+                                    ),                                   
+                                ], style={"position": "relative", "width": "48%", "display": "inline-block", "marginRight": "2%"}),
                             ], style={'display': 'flex', 'justifyContent': 'center', 'alignItems': 'center', 'width': '100%'})
                         ], style=CARD_STYLE),
-
                         
                         # Demographics Section (now after Teacher Performance)
                         html.Div([
-                            html.H2("Demographics Analysis", 
+                            html.H2("Student Demographic Analysis", 
                                     style=TEXT_STYLES['section_header']),
                             html.Div([
                                 html.Button('Gender Distribution', id='marketing-btn-gender', n_clicks=0, style=BUTTON_STYLE),
@@ -756,7 +1068,43 @@ app.layout = html.Div([
                                 html.Button('Region Distribution', id='marketing-btn-region', n_clicks=0, style=BUTTON_STYLE),
                                 html.Button('Age by Course Type', id='marketing-btn-age-course', n_clicks=0, style=BUTTON_STYLE)
                             ], style={'textAlign': 'center', 'marginBottom': '24px'}),
-                            dcc.Graph(id='marketing-demographics-chart')
+                            dcc.Graph(id='marketing-demographics-chart', style={'width': '100%', 'height': '600px'}),
+                            html.Span(
+                                "ⓘ",  # Info icon
+                                id="info-icon-marketing-demographics-chart",
+                                style={
+                                    "fontSize": "20px",
+                                    "cursor": "pointer",
+                                    "color": "#007BFF",
+                                    "position": "relative",  # Relative positioning
+                                    "top": "-50px",          # Adjust position slightly
+                                    "left": "10px"
+                                }
+                            ),
+                            dbc.Tooltip(
+                                [
+                                    html.Ul([
+                                        html.Li("Users: Marketing, Customer Support Teams"),
+                                        html.Li("Purpose: Understand student demographics (gender, age, region) for personalized service and growth."),
+                                        html.Li("Chart Details:"),
+                                        html.Ul([
+                                            html.Li("Pie Chart: Gender distribution (Male, Female)"),
+                                            html.Li("Histogram: X = Age groups, Y = Number of students"),
+                                            html.Li("Bar Chart: X = Geographic regions, Y = Students per region"),
+                                            html.Li("Interactive: Demographic filters with buttons")
+                                        ]),
+                                        html.Li("Insights:"),
+                                        html.Ul([
+                                            html.Li("Understand gender and age composition for marketing and course customization."),
+                                            html.Li("Identify regions with high/low student participation."),
+                                            html.Li("Support regional and demographic-specific outreach.")
+                                        ])
+                                    ])
+                                ],
+                                target="info-icon-marketing-demographics-chart",
+                                placement="right",
+                                style={"fontSize": "14px"}
+                            ),
                         ], style=CARD_STYLE)
                     ], id='marketing-content', style={'display': 'none'})
                 ]
@@ -1269,6 +1617,7 @@ def update_booking_heatmap(start_date, end_date, age_range, course_types, cities
             b=100    # 增加下邊距
         ),
         xaxis=dict(
+            title=None,
             tickangle=45,
             tickfont=dict(size=18),
             titlefont=dict(size=20),
@@ -1289,106 +1638,7 @@ def update_booking_heatmap(start_date, end_date, age_range, course_types, cities
 
 # Callback for Booking Heatmap
 @app.callback(
-    Output('operation-booking-heatmap', 'figure'),
-    [Input('operation-date-range-combined', 'start_date'),
-     Input('operation-date-range-combined', 'end_date'),
-     Input('operation-age-range-demo', 'value'),
-     Input('operation-course-type-combined', 'value'),
-     Input('operation-region-revenue', 'value'),
-     Input('operation-gender-dropdown', 'value')],
-    prevent_initial_call=False
-)
-def update_booking_heatmap(start_date, end_date, age_range, course_types, cities, genders):
-    filtered_df = base_data.copy()
-    
-    # Apply filters
-    if start_date and end_date:
-        filtered_df = filtered_df[(filtered_df['Order_Date'] >= start_date) & (filtered_df['Order_Date'] <= end_date)]
-    if age_range:
-        filtered_df = filtered_df[(filtered_df['Customer_Age'] >= age_range[0]) & (filtered_df['Customer_Age'] <= age_range[1])]
-    if course_types:
-        filtered_df = filtered_df[filtered_df['Course_Type_Name'].isin(course_types)]
-    if cities:
-        filtered_df = filtered_df[filtered_df['City'].isin(cities)]
-    if genders:
-        filtered_df = filtered_df[filtered_df['Customer_Gender'].isin(genders)]
-
-    # Add day and month columns
-    filtered_df['Day_of_Week'] = filtered_df['Order_Date'].dt.day_name()
-    filtered_df['Month'] = filtered_df['Order_Date'].dt.strftime('%Y-%m')
-
-    # Group data for heatmap
-    heatmap_data = filtered_df.groupby(['Day_of_Week', 'Month'])['Amount'].sum().reset_index()
-
-    # Define the correct order for days and months
-    days_order = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday']
-    #months_order = [
-    #    'January', 'February', 'March', 'April', 'May', 'June',
-    #    'July', 'August', 'September', 'October', 'November', 'December'
-    #]
-
-    # Ensure correct ordering and add missing combinations
-    all_combinations = pd.DataFrame(list(itertools.product(days_order)), columns=['Day_of_Week'])
-    heatmap_data = all_combinations.merge(heatmap_data, on=['Day_of_Week'], how='left').fillna(0)
-
-    # Pivot the data for the heatmap
-    heatmap_pivot = heatmap_data.pivot(index='Day_of_Week', columns='Month', values='Amount').fillna(0)
-
-    # Reindex rows and columns explicitly
-    heatmap_pivot = heatmap_pivot.reindex(index=days_order)
-
-    # Create heatmap
-    fig = px.imshow(
-        heatmap_pivot,
-        labels=dict( y="Day of the Week", color="Total Amount"),
-        y=days_order,
-        color_continuous_scale=[
-            [0, "grey"],
-            [0.5, "#ffe5bd"],
-            [1, "#EDB265"]
-        ],
-        zmin=0,
-        zmax=120000,
-        title="Heatmap of Transaction Amount"
-    )
-    fig.update_layout(
-        title={
-            'text': 'Student Order Timing Analysis',
-            'y': 0.98,
-            'x': 0.5,
-            'xanchor': 'center',
-            'yanchor': 'top',
-            'font': dict(size=24)
-        },
-        height=600,  # 增加圖表高度
-        margin=dict(
-            l=100,   # 增加左邊距
-            r=100,   # 增加右邊距
-            t=150,   # 顯著增加上邊距
-            b=100    # 增加下邊距
-        ),
-        xaxis=dict(
-            tickangle=45,
-            tickfont=dict(size=18),
-            titlefont=dict(size=20),
-            title_standoff=30,  # 增加軸標題與圖表的距離
-            dtick="M1",  # 設置月份間隔
-            tickformat="%b"  # 格式化日期顯示
-        ),
-        yaxis=dict(
-            tickfont=dict(size=18),
-            titlefont=dict(size=20),
-            title_standoff=30,
-            title_text='Day of Week',
-            rangemode='tozero'
-        )
-    )
-
-    return fig
-
-# Callback for Booking Heatmap
-@app.callback(
-    Output('marketing-booking-heatmap_2', 'figure'),
+    Output('marketing-booking-heatmap', 'figure'),
     [Input('marketing-date-range-combined', 'start_date'),
      Input('marketing-date-range-combined', 'end_date'),
      Input('marketing-age-range-demo', 'value'),
@@ -1467,6 +1717,7 @@ def update_booking_heatmap(start_date, end_date, age_range, course_types, cities
             b=100    # 增加下邊距
         ),
         xaxis=dict(
+            title=None,
             tickangle=45,
             tickfont=dict(size=18),
             titlefont=dict(size=20),
@@ -2122,10 +2373,11 @@ def update_teacher_trend(start_date, end_date, age_range, course_types, cities, 
         ))
 
     # 更新 layout
+    # Sales Volume by Teacher (Sorted by Total Sales)
     fig.update_layout(
         barmode='stack',  # 堆疊模式
         title={
-            'text': 'Sales Volume by Teacher (Sorted by Total Sales)',
+            'text': 'Teacher Performance Analysis',
             'y': 0.95,
             'x': 0.5,
             'xanchor': 'center',
@@ -2134,7 +2386,7 @@ def update_teacher_trend(start_date, end_date, age_range, course_types, cities, 
         },
         xaxis_title="Teacher",
         yaxis_title="Sales Volume",
-        height=500,
+        height=600,
         margin=dict(l=100, r=100, t=100, b=100),
         legend=dict(
             orientation="v",  # 水平排列
@@ -2291,7 +2543,7 @@ def update_teacher_trend(start_date, end_date, age_range, course_types, cities, 
     fig.update_layout(
         barmode='stack',  # 堆疊模式
         title={
-            'text': 'Sales Volume by Teacher (Sorted by Total Sales)',
+            'text': 'Teacher Performance Analysis',
             'y': 0.95,
             'x': 0.5,
             'xanchor': 'center',
@@ -2300,7 +2552,7 @@ def update_teacher_trend(start_date, end_date, age_range, course_types, cities, 
         },
         xaxis_title="Teacher",
         yaxis_title="Sales Volume",
-        height=500,
+        height=600,
         margin=dict(l=100, r=100, t=100, b=100),
         legend=dict(
             orientation="v",  # 水平排列
@@ -2444,7 +2696,8 @@ def update_teacher_trend(start_date, end_date, age_range, course_types, cities, 
     )
 
     # Update layout
-    title_text = 'Teacher-Student Age Distribution (Unique Students)'
+    # Teacher-Student Age Distribution (Unique Students)
+    title_text = 'Teacher Audience Analysis'
     if len(teacher_totals) > 5:
         title_text += ' (Top 5 Teachers)'
         
@@ -2601,7 +2854,7 @@ def update_teacher_trend(start_date, end_date, age_range, course_types, cities, 
     )
 
     # Update layout
-    title_text = 'Teacher-Student Age Distribution (Unique Students)'
+    title_text = 'Teacher Audience Analysis'
     if len(teacher_totals) > 5:
         title_text += ' (Top 5 Teachers)'
         
