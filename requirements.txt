@@ -3,5 +3,6 @@ plotly
 pandas       
 Cython
 numpy
+dash-bootstrap-components
 
 gunicorn
